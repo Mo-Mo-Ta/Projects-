@@ -1,0 +1,91 @@
+#include <stdio.h>
+#include <string.h>
+
+#define HISTORY_SIZE 5
+
+char history[HISTORY_SIZE][50];
+int historyCount = 0;
+
+void addHistory(char record[]) {
+    if(historyCount < HISTORY_SIZE) {
+        strcpy(history[historyCount], record);
+        historyCount++;
+    } else {
+        // shift history
+        for(int i=1; i<HISTORY_SIZE; i++)
+            strcpy(history[i-1], history[i]);
+        strcpy(history[HISTORY_SIZE-1], record);
+    }
+}
+
+void showHistory() {
+    printf("\n--- Last %d operations ---\n", historyCount);
+    for(int i=0; i<historyCount; i++)
+        printf("%s\n", history[i]);
+    printf("-------------------------\n");
+}
+
+float add(float a, float b) { return a + b; }
+float subtract(float a, float b) { return a - b; }
+float multiply(float a, float b) { return a * b; }
+float divide(float a, float b) { return a / b; }
+
+int main() {
+    int choice;
+    float num1, num2, result;
+    char record[50];
+
+    do {
+        printf("\n--- Simple Calculator ---\n");
+        printf("1. Add\n2. Subtract\n3. Multiply\n4. Divide\n5. History\n6. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        if(choice >=1 && choice <=4) {
+            printf("Enter two numbers: ");
+            scanf("%f %f", &num1, &num2);
+        }
+
+        switch(choice) {
+            case 1:
+                result = add(num1, num2);
+                printf("Result: %.2f\n", result);
+                sprintf(record, "%.2f + %.2f = %.2f", num1, num2, result);
+                addHistory(record);
+                break;
+            case 2:
+                result = subtract(num1, num2);
+                printf("Result: %.2f\n", result);
+                sprintf(record, "%.2f - %.2f = %.2f", num1, num2, result);
+                addHistory(record);
+                break;
+            case 3:
+                result = multiply(num1, num2);
+                printf("Result: %.2f\n", result);
+                sprintf(record, "%.2f * %.2f = %.2f", num1, num2, result);
+                addHistory(record);
+                break;
+            case 4:
+                if(num2 != 0) {
+                    result = divide(num1, num2);
+                    printf("Result: %.2f\n", result);
+                    sprintf(record, "%.2f / %.2f = %.2f", num1, num2, result);
+                    addHistory(record);
+                } else {
+                    printf("Cannot divide by zero!\n");
+                }
+                break;
+            case 5:
+                showHistory();
+                break;
+            case 6:
+                printf("Exiting...\n");
+                break;
+            default:
+                printf("Invalid choice!\n");
+        }
+
+    } while(choice != 6);
+
+    return 0;
+}
